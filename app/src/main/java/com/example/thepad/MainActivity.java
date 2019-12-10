@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.speech.RecognizerIntent;
 import android.view.Menu;
@@ -19,7 +20,7 @@ import android.widget.ImageButton;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ListView.OnItemClickListener {
     private ListView itemsList;
     private ArrayList<String> items;
     private ArrayAdapter<String> adapter;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         items = com.example.finalproject.FileHelper.readData(this);
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         itemsList.setAdapter(adapter);
+
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
         ImageButton speak = findViewById(R.id.speak);
         speak.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,7 +66,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        itemsList.setOnItemClickListener(this);
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        items.remove(position);
+        adapter.notifyDataSetChanged();
+        Toast.makeText(this, "Recording Deleted", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -76,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     adapter.add(message);
                     com.example.finalproject.FileHelper.writeData(items, this);
-                    Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Recording saved", Toast.LENGTH_SHORT).show();
                     break;
                 }
             }
